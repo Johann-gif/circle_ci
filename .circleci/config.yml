@@ -3,6 +3,7 @@ workflows:
   workflow1:
     jobs:
       - hello1
+      - yarn1
 jobs: 
   hello1: 
     docker: 
@@ -14,3 +15,16 @@ jobs:
         run: 
           command: "echo ok"
           name: "Hello World"
+  yarn1:
+    docker: 
+      - 
+        image: "circleci/node:12"
+    steps: 
+      - checkout
+      - restore_cache:
+          key: yarn-v1-packages-{{ checksum "yarn.lock" }}
+      - run: yarn global add node-gyp && yarn install
+      - save_cache:
+          key: yarn-v1-packages-{{ checksum "yarn.lock" }}      
+          paths:
+            - ./node_modules
