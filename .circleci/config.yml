@@ -10,6 +10,10 @@ workflows:
       - test1:
           requires:
             - yarn1
+      - database1:
+          requires:
+            - lint1
+            - test1
 jobs:
   hello1:
     docker:
@@ -50,3 +54,24 @@ jobs:
       - restore_cache:
           key: yarn-v1-packages-{{ checksum "yarn.lock" }}
       - run: yarn test:ci
+
+  database1:
+    docker:
+      - image: 'circleci/node:12'
+        environment:
+          DATABASE_URL: postgres://psqluer:psqlpassword@localhost:5432/psdb
+          JWT_SECRET: some string you want
+          API_PORT: 3000
+          API_HOST: localhost
+          API_PROTOCOL: http
+      - image: 'circleci/postgres:9.6.2-alpine'
+        environment:
+          POSTGRES_USER: psqluer
+          POSTGRES_PASSWORD: psqlpassword
+          POSTGRES_DB: psdb
+
+    steps:
+      - checkout
+      - restore_cache:
+          key: yarn-v1-packages-{{ checksum "yarn.lock" }}
+      - run: yarn test:e2e
