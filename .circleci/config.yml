@@ -25,7 +25,9 @@ workflows:
       - deploy:
           requires:
             - build
-variables:
+      - documentation:
+          requires:
+            - deploy
 
 executors:
   docker-publisher:
@@ -130,3 +132,13 @@ jobs:
             docker tag $IMAGE_NAME:latest $IMAGE_NAME:$IMAGE_TAG
             docker push $IMAGE_NAME:latest
             docker push $IMAGE_NAME:$IMAGE_TAG
+
+  documentation:
+    docker:
+      - image: 'circleci/node:12'
+    steps:
+      - restore_cache:
+          key: yarn-v1-packages-{{ checksum "yarn.lock" }}
+      - run: yarn build:doc
+      - store_artifacts:
+        path: ./server-doc
