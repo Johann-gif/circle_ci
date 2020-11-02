@@ -137,8 +137,9 @@ jobs:
     docker:
       - image: 'circleci/node:12'
     steps:
+      - checkout
       - restore_cache:
           key: yarn-v1-packages-{{ checksum "yarn.lock" }}
-      - run: yarn build:doc
+      - run: yarn doc:build
       - store_artifacts:
-        path: ./server-doc
+          path: ./doc-server
