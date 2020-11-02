@@ -9,6 +9,7 @@ jobs:
       - 
         image: "circleci/node:12"
     steps: 
+      - checkout
       - 
         run: 
           command: "echo ok"
