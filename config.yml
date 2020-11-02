@@ -1,0 +1,15 @@
+version: 2.1
+workflows:
+  workflow1:
+    jobs:
+      - hello1
+jobs: 
+  hello1: 
+    docker: 
+      - 
+        image: "circleci/node:12"
+    steps: 
+      - 
+        run: 
+          command: "echo ok"
+          name: "Hello World"
